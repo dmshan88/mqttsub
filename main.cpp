@@ -2,13 +2,14 @@
 #include <QDebug>
 
 #include "qmqtt/qmqtt.h"
-#include "include.h"
-using QMQTT::Client;
+//#include "include.h"
+#include "mqttsubinstance.h"
+//using QMQTT::Client;
 
 int main(int argc, char ** argv)
 {
     QCoreApplication a(argc, argv);
-    Client *client = new Client("localhost", 1883);
-    qDebug() << client->isConnected() << POST_URL;
+//    MyClient *client = new MyClient("115.28.27.137", 1883);
+    MqttSubInstance::Instance();
     return a.exec();
 }

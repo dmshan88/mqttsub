@@ -8,6 +8,7 @@ TEMPLATE = app
 DEFINES += PARAMS_LOCAL
 
 SOURCES += main.cpp \
+    mqttsubinstance.cpp \
     qmqtt/qmqtt_client.cpp \
     qmqtt/qmqtt_network.cpp \
     qmqtt/qmqtt_frame.cpp \
@@ -16,6 +17,7 @@ SOURCES += main.cpp \
     qmqtt/qmqtt_will.cpp
 
 HEADERS += include.h \
+    mqttsubinstance.h \
     params.h \
     params_local.h \
     qmqtt/qmqtt_client.h \
