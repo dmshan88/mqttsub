@@ -1,3 +1,5 @@
 *~
-*-local.h
+*_local.h
+*.user
+/qmqtt/*
 !.gitignore
