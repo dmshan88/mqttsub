@@ -9,6 +9,7 @@ DEFINES += PARAMS_LOCAL
 
 SOURCES += main.cpp \
     mqttsubinstance.cpp \
+    httppostinstance.cpp \
     qmqtt/qmqtt_client.cpp \
     qmqtt/qmqtt_network.cpp \
     qmqtt/qmqtt_frame.cpp \
@@ -18,6 +19,7 @@ SOURCES += main.cpp \
 
 HEADERS += include.h \
     mqttsubinstance.h \
+    httppostinstance.h \
     params.h \
     params_local.h \
     qmqtt/qmqtt_client.h \
