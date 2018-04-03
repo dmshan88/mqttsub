@@ -1,0 +1,6 @@
+*~
+*.bak
+*_local.h
+*.user
+/qmqtt/*
+!.gitignore
