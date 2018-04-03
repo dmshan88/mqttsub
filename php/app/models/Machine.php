@@ -9,6 +9,7 @@ use Yii;
  *
  * @property string $id
  * @property string $clientid
+ * @property string $mtype
  *
  * @property Historystat[] $historystats
  * @property Newstat $newstat
@@ -32,6 +33,7 @@ class Machine extends \yii\db\ActiveRecord
             [['id'], 'required'],
             [['id'], 'string', 'max' => 10],
             [['clientid'], 'string', 'max' => 20],
+            [['mtype'], 'string', 'max' => 14],
             [['id'], 'unique'],
         ];
     }
@@ -44,6 +46,7 @@ class Machine extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'clientid' => 'Clientid',
+            'mtype' => 'Mtype',
         ];
     }
 

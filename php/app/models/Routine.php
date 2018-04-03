@@ -92,6 +92,7 @@ class Routine
                 $Machine->setAttributes([
                     'id' => $machineid,
                     'clientid' => $mid,
+                    'mtype' => substr($mid, 0, -7),
                 ]);
                 if (!$Machine->save()) {
                     throw new \Exception('Machine add fail', 1);

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
+/* @var $searchModel app\models\NewstatSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Newstats';
@@ -15,11 +16,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'machine_id',
             'activetime',
+            [
+                'attribute' => 'type',
+                'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+                'content' => function ($model,$key, $index, $column) {
+                    return $model->machine->mtype;
+                
+                },
+            ],
+            'machine_id',
             [                                                  // the owner name of the model
                 'attribute' => 'online',
                 'format' => 'html',
@@ -36,6 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 }
             ],
+
+            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

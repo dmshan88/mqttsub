@@ -10,6 +10,8 @@ USE `mqttsub` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mqttsub`.`machine` (
   `id` CHAR(10) NOT NULL,
+  `clientid` VARCHAR(20) NULL,
+  `mtype` CHAR(14) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
