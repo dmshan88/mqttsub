@@ -15,7 +15,7 @@ class HttpPostInstance : public QObject
 public:
     static HttpPostInstance *Instance();
     ~HttpPostInstance();
-    void mypost(const qint16 cmd, QVariant param1 = "", QVariant param2 = "", QVariant param3 = "");
+//    void mypost(const qint16 cmd, QVariant param1 = "", QVariant param2 = "", QVariant param3 = "");
 
 public:
     static const qint16 CMD_INIT = 1;

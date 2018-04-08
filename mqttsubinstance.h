@@ -2,10 +2,6 @@
 #define MQTTSUBINSTANCE_H
 
 #include <QObject>
-//#include <QNetworkAccessManager>
-//#include <QNetworkRequest>
-//#include <QNetworkReply>
-#include "httppostinstance.h"
 #include "qmqtt/qmqtt_client.h"
 
 
@@ -47,6 +43,9 @@ protected:
     MqttSubInstance();
 
 signals:
+    void Signals_Server_Init();
+    void Signals_Machine_Connected(const QString);
+    void Signals_Machine_Disconnected(const QString);
 
 public slots:
 
@@ -58,11 +57,6 @@ private slots:
 private:
     static MqttSubInstance *_instance;
     QMQTT::Client *m_client;
-    HttpPostInstance *m_post;
-//    QNetworkAccessManager *nam;
-//    QNetworkRequest *request;
-//    QNetworkReply *reply;
-//    QString asdf;
 };
 
 #endif

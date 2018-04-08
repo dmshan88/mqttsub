@@ -26,6 +26,7 @@ HttpPostInstance::~HttpPostInstance()
 
 }
 
+/*
 void HttpPostInstance::mypost(const qint16 cmd, QVariant param1, QVariant param2, QVariant param3)
 {
 //    qDebug() << cmd << param1 << param2 << param3;
@@ -63,3 +64,4 @@ void HttpPostInstance::mypost(const qint16 cmd, QVariant param1, QVariant param2
     reply = nam->post(*request, postdata);
     qDebug() << postdata;
 }
+*/

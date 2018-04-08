@@ -1,4 +1,5 @@
 QT += network
+QT += sql
 QT -= gui
 
 CONFIG += console
@@ -9,7 +10,7 @@ DEFINES += PARAMS_LOCAL
 
 SOURCES += main.cpp \
     mqttsubinstance.cpp \
-    httppostinstance.cpp \
+    mysqlinterface.cpp \
     qmqtt/qmqtt_client.cpp \
     qmqtt/qmqtt_network.cpp \
     qmqtt/qmqtt_frame.cpp \
@@ -19,7 +20,7 @@ SOURCES += main.cpp \
 
 HEADERS += include.h \
     mqttsubinstance.h \
-    httppostinstance.h \
+    mysqlinterface.h \
     params.h \
     params_local.h \
     qmqtt/qmqtt_client.h \

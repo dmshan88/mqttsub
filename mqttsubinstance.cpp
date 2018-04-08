@@ -2,7 +2,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QDataStream>
-//#include <QUrl>
+
 #include "mqttsubinstance.h"
 #include "include.h"
 
@@ -17,8 +17,9 @@ MqttSubInstance*  MqttSubInstance::Instance()
 }
 
 MqttSubInstance::MqttSubInstance() :
-    m_client(new QMQTT::Client()),
-    m_post(HttpPostInstance::Instance())
+    m_client(new QMQTT::Client())
+//  ,
+//    m_post(HttpPostInstance::Instance())
 {
     connect(m_client, SIGNAL(connected()), this, SLOT(Slots_MQTT_Connected()));
     connect(m_client, SIGNAL(subscribed(QString)), this, SLOT(Slots_MQTT_subscribed(QString)));
@@ -47,11 +48,10 @@ void MqttSubInstance::Slots_MQTT_Connected()
     m_client->subscribe("$SYS/broker/clients/connected", 0);
     m_client->subscribe("$SYS/broker/subscriptions/count", 0);
 
-    m_post->mypost(HttpPostInstance::CMD_INIT);
-//    QByteArray postdata;
-//    postdata.append("cmd=init&");
-//    postdata.append((QString) "clientid=1" + (QString) MYMQTT_CLIENT_ID);
-//    reply = nam->post(*request, postdata);
+//    m_post->mypost(HttpPostInstance::CMD_INIT);
+//    emit Signals_Received(HttpPostInstance::CMD_INIT, 0, 0 ,0);
+    emit Signals_Server_Init();
+
 }
 
 void MqttSubInstance::Slots_MQTT_subscribed(const QString &topic)
@@ -62,20 +62,17 @@ void MqttSubInstance::Slots_MQTT_subscribed(const QString &topic)
 void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
 {
 //    qDebug() << message.payload();
-    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " received:";
-//    QByteArray postdata;
+//    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " received:";
     QString data(message.payload());
     QString mid;
     if (message.topic() != "mnchip_mqtt_server") {
-        qDebug() << "topic:" << message.topic() << data;
+//        qDebug() << "topic:" << message.topic() << data;
         return ;
     }
     if (data.startsWith("CMD_DISCONNECT")) {
-//        postdata.append("cmd=disconnect&");
-//        postdata.append("mid=" + data.mid(26));
-//        reply = nam->post(*request, postdata);
+
         mid = data.mid(26);
-        m_post->mypost(HttpPostInstance::CMD_DISCONNECT, mid);
+        emit Signals_Machine_Disconnected(mid);
         qDebug() << "CMD_DISCONNECT" << mid;
         return ;
     }
@@ -96,17 +93,15 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
 
     if ((QString::compare(cmdtype, CMD_MACHINEINFO, Qt::CaseSensitive)) == 0)
     {
-//      qDebug() << "CMD_MACHINEINFO";
         QString clientid;
         in >> clientid;
-//        postdata.append("cmd=connected&");
-//        postdata.append("mid=" + clientid.mid(12));
-//        reply = nam->post(*request, postdata);
+
         mid = clientid.mid(12);
-        m_post->mypost(HttpPostInstance::CMD_CONNECTED, mid);
+        emit Signals_Machine_Connected(mid);
         qDebug() << "CMD_MACHINEINFO" << mid;
 
     }
+    /*
     else if ((QString::compare(cmdtype, CMD_LOGINPSD, Qt::CaseSensitive)) == 0)
     {
         qDebug() << "CMD_LOGINPSD";
@@ -184,4 +179,5 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     {
         qDebug() << "OTHER:" << inBlock;
     }
+    */
 }

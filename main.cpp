@@ -7,6 +7,7 @@
 
 #include "qmqtt/qmqtt.h"
 #include "mqttsubinstance.h"
+#include "mysqlinterface.h"
 
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -50,7 +51,11 @@ int main(int argc, char ** argv)
 {
     qInstallMessageHandler(myMessageOutput);
     QCoreApplication a(argc, argv);
-//    MyClient *client = new MyClient("115.28.27.137", 1883);
-    MqttSubInstance::Instance();
+    MysqlInterfaceInstance *mysqlinstance = MysqlInterfaceInstance::Instance();
+    MqttSubInstance *mqttinstance= MqttSubInstance::Instance();
+
+    QObject::connect(mqttinstance, SIGNAL(Signals_Server_Init()), mysqlinstance, SLOT(Slots_Server_Init()));
+    QObject::connect(mqttinstance, SIGNAL(Signals_Machine_Connected(QString)), mysqlinstance, SLOT(Slots_Machine_Connected(QString)));
+    QObject::connect(mqttinstance, SIGNAL(Signals_Machine_Disconnected(QString)), mysqlinstance, SLOT(Slots_Machine_Disconnected(QString)));
     return a.exec();
 }
