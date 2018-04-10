@@ -24,6 +24,7 @@ MqttSubInstance::MqttSubInstance() :
     connect(m_client, SIGNAL(connected()), this, SLOT(Slots_MQTT_Connected()));
     connect(m_client, SIGNAL(subscribed(QString)), this, SLOT(Slots_MQTT_subscribed(QString)));
     connect(m_client, SIGNAL(received(QMQTT::Message)), this, SLOT(Slots_MQTT_Received(QMQTT::Message)));
+    connect(m_client, SIGNAL(disconnected()), this, SLOT(Slots_MQTT_Disconnected()));
 //    QObject::connect(&c1, &MyClient1::disconnected, &s1, &Logger::showDisConnected);
 //    QObject::connect(&a, &QCoreApplication::aboutToQuit, &c1, &MyClient1::Disconnect);
     m_client->setHost(MYMQTT_SERVER);
@@ -31,7 +32,8 @@ MqttSubInstance::MqttSubInstance() :
     m_client->setClientId(MYMQTT_CLIENT_ID);
     m_client->setUsername(MYMQTT_USERNAME);
     m_client->setPassword(MYMQTT_PASSWORD);
-//    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " start connect to server";
+//    m_client->setCleansess(true);
+    m_client->setKeepAlive(120);
     m_client->Connect();
 }
 
@@ -51,6 +53,12 @@ void MqttSubInstance::Slots_MQTT_Connected()
 //    m_post->mypost(HttpPostInstance::CMD_INIT);
 //    emit Signals_Received(HttpPostInstance::CMD_INIT, 0, 0 ,0);
     emit Signals_Server_Init();
+
+}
+void MqttSubInstance::Slots_MQTT_Disconnected()
+{
+    qDebug() << "server disconnected";
+    m_client->Connect();
 
 }
 
@@ -194,3 +202,5 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     }
     */
 }
+
+

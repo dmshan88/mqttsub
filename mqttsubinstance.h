@@ -55,6 +55,7 @@ private slots:
     void Slots_MQTT_Connected();
     void Slots_MQTT_subscribed(const QString &topic);
     void Slots_MQTT_Received(QMQTT::Message);
+    void Slots_MQTT_Disconnected();
 
 private:
     static MqttSubInstance *_instance;
