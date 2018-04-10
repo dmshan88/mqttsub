@@ -151,10 +151,23 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     {
         qDebug() << "CMD_TMPDATA_FILES";
     }
+    */
     else if (QString::compare(cmdtype, CMD_CHKERRDATA, Qt::CaseSensitive) == 0)
     {
-        qDebug() << "CMD_CHKERRDATA";
+        QString clientid;
+        QByteArray result;
+        in >> clientid >> result;
+        mid = clientid.mid(12);
+        QJsonDocument parse_document = QJsonDocument::fromJson(result);
+        if (parse_document.isNull()) {
+            qDebug() << "parse error";
+            return;
+        }
+        emit Signals_ChkErrDataReceived(mid, parse_document);
+        qDebug() << "CMD_CHKERRDATA" << mid;
+
     }
+    /*
     else if (QString::compare(cmdtype, CMD_ADJUSTTEMP_GET, Qt::CaseSensitive) == 0)
     {
         qDebug() << "CMD_ADJUSTTEMP_GET";

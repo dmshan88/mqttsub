@@ -5,9 +5,12 @@
 #include <QTextStream>
 #include <QMutex>
 
+//#include <QByteArray>
+
 #include "qmqtt/qmqtt.h"
 #include "mqttsubinstance.h"
 #include "mysqlinterface.h"
+#include "mailsmsinstance.h"
 
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -51,11 +54,14 @@ int main(int argc, char ** argv)
 {
     qInstallMessageHandler(myMessageOutput);
     QCoreApplication a(argc, argv);
-    MysqlInterfaceInstance *mysqlinstance = MysqlInterfaceInstance::Instance();
-    MqttSubInstance *mqttinstance= MqttSubInstance::Instance();
 
+    MysqlInterfaceInstance *mysqlinstance = MysqlInterfaceInstance::Instance();
+    MqttSubInstance *mqttinstance = MqttSubInstance::Instance();
+    MailSmsInstance *mailsmsinstance = MailSmsInstance::Instance();
     QObject::connect(mqttinstance, SIGNAL(Signals_Server_Init()), mysqlinstance, SLOT(Slots_Server_Init()));
     QObject::connect(mqttinstance, SIGNAL(Signals_Machine_Connected(QString)), mysqlinstance, SLOT(Slots_Machine_Connected(QString)));
     QObject::connect(mqttinstance, SIGNAL(Signals_Machine_Disconnected(QString)), mysqlinstance, SLOT(Slots_Machine_Disconnected(QString)));
+    QObject::connect(mqttinstance, SIGNAL(Signals_ChkErrDataReceived(QString,QJsonDocument)), mailsmsinstance, SLOT(Slots_ChkErrDataReceived(QString,QJsonDocument)));
+//    mailsmsinstance->test();
     return a.exec();
 }

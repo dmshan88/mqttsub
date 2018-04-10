@@ -13,4 +13,10 @@
 #define MYSQL_USERNAME "username"
 #define MYSQL_PASSWORD "password"
 
+#define MYSMTP_SERVER "smtp.163.com"
+#define MYSMTP_SERVER_PORT 465
+#define MYSMTP_USERNAME "your_email@163.com"
+#define MYSMTP_PASSWORD "your_password"
+#define MYSMTP_SENDT0 "to_email@163.com"
+
 #endif
