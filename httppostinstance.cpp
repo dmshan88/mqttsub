@@ -1,7 +1,9 @@
 #include <QUrl>
 #include <QDebug>
-#include "include.h"
+#include <QEventLoop>
+#include <QNetworkReply>
 #include "httppostinstance.h"
+
 
 HttpPostInstance*  HttpPostInstance::_instance = 0;
 
@@ -15,9 +17,8 @@ HttpPostInstance*  HttpPostInstance::Instance()
 
 HttpPostInstance::HttpPostInstance() :
     nam(new QNetworkAccessManager()),
-    request(new QNetworkRequest((QUrl) MYPOST_URL))
+    request(new QNetworkRequest())
 {
-    request->setRawHeader("Content-Type","application/x-www-form-urlencoded");
 
 }
 
@@ -26,40 +27,52 @@ HttpPostInstance::~HttpPostInstance()
 
 }
 
-void HttpPostInstance::mypost(const qint16 cmd, QVariant param1, QVariant param2, QVariant param3)
+QNetworkRequest* HttpPostInstance::getRequest()
 {
-//    qDebug() << cmd << param1 << param2 << param3;
-    QByteArray postdata;
-    QString tmpstring = "";
-    switch (cmd) {
-        case CMD_INIT :
-            qDebug() << "init!!!";
-            tmpstring = "cmd=" + QString::number(cmd) + '&';
-            postdata.append(tmpstring);
-            tmpstring = "clientid=" + (QString) MYMQTT_CLIENT_ID;
-            postdata.append(tmpstring);
-            break;
+    return request;
+}
 
-        case CMD_CONNECTED :
-            qDebug() << param1 << "conected!!!";
-            tmpstring = "cmd=" + QString::number(cmd) + '&';
-            postdata.append(tmpstring);
-            tmpstring = "mid=" + param1.toString();
-            postdata.append(tmpstring);
-            break;
+QByteArray HttpPostInstance::post(QByteArray data)
+{
+    QByteArray bytes;
+    QEventLoop temp_loop;
 
-        case CMD_DISCONNECT :
-            qDebug() << param1 << "disconnect!!!";
-            tmpstring = "cmd=" + QString::number(cmd) + '&';
-            postdata.append(tmpstring);
-            tmpstring = "mid=" + param1.toString();
-            postdata.append(tmpstring);
-            break;
-
-        default:
-            return;
-//            break;
+    QNetworkReply* reply = nam->post(*request, data);
+    connect(reply, SIGNAL(finished()), &temp_loop, SLOT(quit()));
+    temp_loop.exec();
+    if (reply->error() == QNetworkReply::NoError)
+    {
+         bytes = reply->readAll();
     }
-    reply = nam->post(*request, postdata);
-    qDebug() << postdata;
+    reply->deleteLater();
+    return bytes;
+
+}
+
+QByteArray HttpPostInstance::get()
+{
+    QByteArray bytes;
+    QEventLoop temp_loop;
+
+    QNetworkReply* reply = nam->get(*request);
+    connect(reply, SIGNAL(finished()), &temp_loop, SLOT(quit()));
+    temp_loop.exec();
+    if (reply->error() == QNetworkReply::NoError)
+    {
+         bytes = reply->readAll();
+    }
+    reply->deleteLater();
+    return bytes;
+
+}
+
+void HttpPostInstance::setRawHeader(const QByteArray &headerName, const QByteArray &headerValue)
+{
+    request->setRawHeader(headerName,headerValue);
+
+}
+
+void HttpPostInstance::setUrl(const QUrl &url)
+{
+    request->setUrl(url);
 }

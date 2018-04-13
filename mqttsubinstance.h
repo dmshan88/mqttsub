@@ -2,12 +2,9 @@
 #define MQTTSUBINSTANCE_H
 
 #include <QObject>
-//#include <QNetworkAccessManager>
-//#include <QNetworkRequest>
-//#include <QNetworkReply>
-#include "httppostinstance.h"
-#include "qmqtt/qmqtt_client.h"
+#include <QJsonDocument>
 
+#include "qmqtt/qmqtt_client.h"
 
 static const QString CMD_DEVICEID						= "CMD_DEVICEID";
 static const QString CMD_ROOTPATH						= "CMD_ROOTPATH";
@@ -47,6 +44,10 @@ protected:
     MqttSubInstance();
 
 signals:
+    void Signals_Server_Init();
+    void Signals_Machine_Connected(QString);
+    void Signals_Machine_Disconnected(QString);
+    void Signals_ChkErrDataReceived(QString, QJsonDocument);
 
 public slots:
 
@@ -54,15 +55,11 @@ private slots:
     void Slots_MQTT_Connected();
     void Slots_MQTT_subscribed(const QString &topic);
     void Slots_MQTT_Received(QMQTT::Message);
+    void Slots_MQTT_Disconnected();
 
 private:
     static MqttSubInstance *_instance;
     QMQTT::Client *m_client;
-    HttpPostInstance *m_post;
-//    QNetworkAccessManager *nam;
-//    QNetworkRequest *request;
-//    QNetworkReply *reply;
-//    QString asdf;
 };
 
 #endif

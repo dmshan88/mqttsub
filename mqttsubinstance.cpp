@@ -2,7 +2,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QDataStream>
-//#include <QUrl>
+
 #include "mqttsubinstance.h"
 #include "include.h"
 
@@ -17,12 +17,14 @@ MqttSubInstance*  MqttSubInstance::Instance()
 }
 
 MqttSubInstance::MqttSubInstance() :
-    m_client(new QMQTT::Client()),
-    m_post(HttpPostInstance::Instance())
+    m_client(new QMQTT::Client())
+//  ,
+//    m_post(HttpPostInstance::Instance())
 {
     connect(m_client, SIGNAL(connected()), this, SLOT(Slots_MQTT_Connected()));
     connect(m_client, SIGNAL(subscribed(QString)), this, SLOT(Slots_MQTT_subscribed(QString)));
     connect(m_client, SIGNAL(received(QMQTT::Message)), this, SLOT(Slots_MQTT_Received(QMQTT::Message)));
+    connect(m_client, SIGNAL(disconnected()), this, SLOT(Slots_MQTT_Disconnected()));
 //    QObject::connect(&c1, &MyClient1::disconnected, &s1, &Logger::showDisConnected);
 //    QObject::connect(&a, &QCoreApplication::aboutToQuit, &c1, &MyClient1::Disconnect);
     m_client->setHost(MYMQTT_SERVER);
@@ -30,7 +32,8 @@ MqttSubInstance::MqttSubInstance() :
     m_client->setClientId(MYMQTT_CLIENT_ID);
     m_client->setUsername(MYMQTT_USERNAME);
     m_client->setPassword(MYMQTT_PASSWORD);
-//    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " start connect to server";
+//    m_client->setCleansess(true);
+    m_client->setKeepAlive(120);
     m_client->Connect();
 }
 
@@ -47,11 +50,14 @@ void MqttSubInstance::Slots_MQTT_Connected()
     m_client->subscribe("$SYS/broker/clients/connected", 0);
     m_client->subscribe("$SYS/broker/subscriptions/count", 0);
 
-    m_post->mypost(HttpPostInstance::CMD_INIT);
-//    QByteArray postdata;
-//    postdata.append("cmd=init&");
-//    postdata.append((QString) "clientid=1" + (QString) MYMQTT_CLIENT_ID);
-//    reply = nam->post(*request, postdata);
+    emit Signals_Server_Init();
+
+}
+void MqttSubInstance::Slots_MQTT_Disconnected()
+{
+    qDebug() << "server disconnected";
+    m_client->Connect();
+
 }
 
 void MqttSubInstance::Slots_MQTT_subscribed(const QString &topic)
@@ -62,20 +68,17 @@ void MqttSubInstance::Slots_MQTT_subscribed(const QString &topic)
 void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
 {
 //    qDebug() << message.payload();
-    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " received:";
-//    QByteArray postdata;
+//    qDebug() << QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss") << " received:";
     QString data(message.payload());
     QString mid;
     if (message.topic() != "mnchip_mqtt_server") {
-        qDebug() << "topic:" << message.topic() << data;
+//        qDebug() << "topic:" << message.topic() << data;
         return ;
     }
     if (data.startsWith("CMD_DISCONNECT")) {
-//        postdata.append("cmd=disconnect&");
-//        postdata.append("mid=" + data.mid(26));
-//        reply = nam->post(*request, postdata);
+
         mid = data.mid(26);
-        m_post->mypost(HttpPostInstance::CMD_DISCONNECT, mid);
+        emit Signals_Machine_Disconnected(mid);
         qDebug() << "CMD_DISCONNECT" << mid;
         return ;
     }
@@ -96,17 +99,15 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
 
     if ((QString::compare(cmdtype, CMD_MACHINEINFO, Qt::CaseSensitive)) == 0)
     {
-//      qDebug() << "CMD_MACHINEINFO";
         QString clientid;
         in >> clientid;
-//        postdata.append("cmd=connected&");
-//        postdata.append("mid=" + clientid.mid(12));
-//        reply = nam->post(*request, postdata);
+
         mid = clientid.mid(12);
-        m_post->mypost(HttpPostInstance::CMD_CONNECTED, mid);
+        emit Signals_Machine_Connected(mid);
         qDebug() << "CMD_MACHINEINFO" << mid;
 
     }
+    /*
     else if ((QString::compare(cmdtype, CMD_LOGINPSD, Qt::CaseSensitive)) == 0)
     {
         qDebug() << "CMD_LOGINPSD";
@@ -156,10 +157,23 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     {
         qDebug() << "CMD_TMPDATA_FILES";
     }
+    */
     else if (QString::compare(cmdtype, CMD_CHKERRDATA, Qt::CaseSensitive) == 0)
     {
-        qDebug() << "CMD_CHKERRDATA";
+        QString clientid;
+        QByteArray result;
+        in >> clientid >> result;
+        mid = clientid.mid(12);
+        QJsonDocument parse_document = QJsonDocument::fromJson(result);
+        if (parse_document.isNull()) {
+            qDebug() << "parse error";
+            return;
+        }
+        emit Signals_ChkErrDataReceived(mid, parse_document);
+        qDebug() << "CMD_CHKERRDATA" << mid;
+
     }
+    /*
     else if (QString::compare(cmdtype, CMD_ADJUSTTEMP_GET, Qt::CaseSensitive) == 0)
     {
         qDebug() << "CMD_ADJUSTTEMP_GET";
@@ -184,4 +198,7 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     {
         qDebug() << "OTHER:" << inBlock;
     }
+    */
 }
+
+
