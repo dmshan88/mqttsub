@@ -19,4 +19,9 @@
 #define MYSMTP_PASSWORD "your_password"
 #define MYSMTP_SENDT0 "to_email@163.com"
 
+#define TENCENTSMS_APPID "appid";
+#define TENCENTSMS_APPKEY = "1234567890";
+#define TENCENTSMS_TPLID = 1234;
+#define PHONE1 "12345678901"
+#define PHONE2 "11111111111"
 #endif

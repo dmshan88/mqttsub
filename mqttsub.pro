@@ -9,9 +9,14 @@ TEMPLATE = app
 DEFINES += PARAMS_LOCAL
 
 SOURCES += main.cpp \
+    panelinfo.cpp \
+    functions.cpp \
+    services.cpp \
     mqttsubinstance.cpp \
     mysqlinterface.cpp \
-    mailsmsinstance.cpp \
+    mailsmtpinstance.cpp \
+    httppostinstance.cpp \
+    tencentsmsinstance.cpp \
     qmqtt/qmqtt_client.cpp \
     qmqtt/qmqtt_network.cpp \
     qmqtt/qmqtt_frame.cpp \
@@ -32,9 +37,14 @@ SOURCES += main.cpp \
     smtpclient/mimecontentformatter.cpp
 
 HEADERS += include.h \
+    panelinfo.h \
+    functions.h \
+    services.h \
     mqttsubinstance.h \
     mysqlinterface.h \
-    mailsmsinstance.h \
+    mailsmtpinstance.h \
+    httppostinstance.h \
+    tencentsmsinstance.h \
     params.h \
     params_local.h \
     qmqtt/qmqtt_client.h \

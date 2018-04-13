@@ -4,10 +4,6 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QString>
-#include <QVariant>
-//#include <QINT
 
 class HttpPostInstance : public QObject
 {
@@ -15,14 +11,13 @@ class HttpPostInstance : public QObject
 public:
     static HttpPostInstance *Instance();
     ~HttpPostInstance();
-//    void mypost(const qint16 cmd, QVariant param1 = "", QVariant param2 = "", QVariant param3 = "");
+    QNetworkRequest* getRequest();
 
-public:
-    static const qint16 CMD_INIT = 1;
-    static const qint16 CMD_CONNECTED = 2;
-    static const qint16 CMD_DISCONNECT = 3;
-//    static const qint8 CMD_INIT = 0;
-//    static const qint8 CMD_INIT = 0;
+    QByteArray post(QByteArray data);
+    QByteArray get();
+    void setRawHeader(const QByteArray & headerName, const QByteArray & headerValue);
+    void setUrl(const QUrl & url);
+private:
 
 protected:
     HttpPostInstance();
@@ -34,10 +29,9 @@ public slots:
 private slots:
 
 private:
-    static HttpPostInstance *_instance;
-    QNetworkAccessManager *nam;
-    QNetworkRequest *request;
-    QNetworkReply *reply;
+    static HttpPostInstance* _instance;
+    QNetworkAccessManager* nam;
+    QNetworkRequest* request;
 };
 
 #endif
