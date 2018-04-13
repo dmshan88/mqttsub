@@ -62,39 +62,3 @@ bool MailSmtpInstance::sendmail(QString content, QString subject, QString mailto
     m_smtp->quit();
     return true;
 }
-
-/*
-void MailSmsInstance::Slots_ChkErrDataReceived(const QString mid, QJsonDocument document)
-{
-    QJsonObject obj = document.object();
-
-    QString mtype = mid.left(1);
-    QString machineid = mid.right(6);
-    qint16 panel = obj["panelid"].toInt();
-    QString lot = obj["lot"].toString();
-    QString error = obj["summary"].toString();
-    QString datetime = QDateTime::fromTime_t(obj["checkdatetime"].toInt()).toString("yy-MM-dd HH:mm");
-    if (panel < 50) {
-        mtype += 'M';
-    } else {
-        mtype += 'V';
-    }
-    QString string = "<table>";
-    string += QString("<tr> <td> mtype </td> <td> %1 </td> </tr>").arg(mtype);
-    string += QString("<tr> <td> machineid </td> <td> %1 </td> </tr>").arg(machineid);
-    string += QString("<tr> <td> panel </td> <td> %1 </td> </tr>").arg(panel);
-    string += QString("<tr> <td> datetime </td> <td> %1 </td> </tr>").arg(datetime);
-    string += QString("<tr> <td> lot </td> <td> %1 </td> </tr>").arg(lot);
-    string += QString("<tr> <td> error </td> <td> %1 </td> </tr>").arg(error);
-    string += "</table>";
-    sendmail(string, "CMD_CHKERRDATA");
-    QStringList strlist, phonelist;
-    strlist << machineid << error.left(8) << QString::number(panel) << lot << datetime;
-    TencentsmsInstance* instance = TencentsmsInstance::Instance();
-    instance->setApp("1400021595", "eca0d75539ba9202b0f6f5a8d8c1a504");
-//   phonelist << "13820158461" << "18678318715";
-    phonelist << "13820158461";
-    qDebug() << instance->send(phonelist, 55384, strlist);
-
-}
-*/

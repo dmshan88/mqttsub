@@ -50,8 +50,6 @@ void MqttSubInstance::Slots_MQTT_Connected()
     m_client->subscribe("$SYS/broker/clients/connected", 0);
     m_client->subscribe("$SYS/broker/subscriptions/count", 0);
 
-//    m_post->mypost(HttpPostInstance::CMD_INIT);
-//    emit Signals_Received(HttpPostInstance::CMD_INIT, 0, 0 ,0);
     emit Signals_Server_Init();
 
 }

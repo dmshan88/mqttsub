@@ -2,7 +2,7 @@
 //#include <QString>
 Panelinfo::Panelinfo()
 {
-   cnnamemap.insert(0, (QString)"肝肾");
+   cnnamemap.insert(0, "肝肾");
    cnnamemap.insert(1, "肝功");
    cnnamemap.insert(2, "肾功");
    cnnamemap.insert(3, "电解质");

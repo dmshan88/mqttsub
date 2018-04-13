@@ -62,7 +62,7 @@ void ServicesInstance::Slots_ChkErrDataReceived(const QString mid, QJsonDocument
 
     smsinstance->setApp((QString) TENCENTSMS_APPID, (QString) TENCENTSMS_APPKEY);
 
-    phonelist << PHONE1;
+    phonelist << PHONE1 << PHONE2 << PHONE3;
     qDebug() << smsinstance->send(phonelist, (qint32) TENCENTSMS_TPLID, strlist);
 
 }

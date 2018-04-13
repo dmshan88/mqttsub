@@ -21,7 +21,6 @@ private:
 signals:
 
 public slots:
-//    void Slots_ChkErrDataReceived(const QString mid, QJsonDocument document);
 
 private slots:
 
