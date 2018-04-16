@@ -48,6 +48,7 @@ signals:
     void Signals_Machine_Connected(QString);
     void Signals_Machine_Disconnected(QString);
     void Signals_ChkErrDataReceived(QString, QJsonDocument);
+    void Signals_PositionReceived(QString, uint, int, int, uint, uint);
 
 public slots:
 

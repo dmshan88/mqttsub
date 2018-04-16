@@ -182,10 +182,21 @@ void MqttSubInstance::Slots_MQTT_Received(QMQTT::Message message)
     {
         qDebug() << "CMD_RESETTIME";
     }
+    */
     else if (QString::compare(cmdtype, CMD_POSITION, Qt::CaseSensitive) == 0)
     {
-        qDebug() << "CMD_POSITION";
+//        qDebug() << "CMD_POSITION";
+//        QString clientid;
+        QString clientid;
+        uint time,lac,ci;
+        int mcc,mnc;
+        in >> clientid >> time >> mcc >> mnc >> lac >> ci;
+        mid = clientid.mid(12);
+        qDebug() << mid << " received position" << mcc << mnc << lac << ci;
+
+        emit Signals_PositionReceived(mid, time ,mcc, mnc, lac, ci);
     }
+    /*
     else if ((QString::compare(cmdtype, CMD_MACHINEERRDATA, Qt::CaseSensitive)) == 0)
     {
         qDebug() << "CMD_MACHINEERRDATA";

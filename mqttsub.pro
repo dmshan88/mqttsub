@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     mailsmtpinstance.cpp \
     httppostinstance.cpp \
     tencentsmsinstance.cpp \
+    celllocationinstance.cpp \
     qmqtt/qmqtt_client.cpp \
     qmqtt/qmqtt_network.cpp \
     qmqtt/qmqtt_frame.cpp \
@@ -45,6 +46,7 @@ HEADERS += include.h \
     mailsmtpinstance.h \
     httppostinstance.h \
     tencentsmsinstance.h \
+    celllocationinstance.h \
     params.h \
     params_local.h \
     qmqtt/qmqtt_client.h \

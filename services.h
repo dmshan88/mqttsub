@@ -7,6 +7,7 @@
 #include "mysqlinterface.h"
 #include "mailsmtpinstance.h"
 #include "tencentsmsinstance.h"
+#include "celllocationinstance.h"
 #include "panelinfo.h"
 
 class ServicesInstance : public QObject
@@ -28,6 +29,7 @@ public slots:
 
 private slots:
     void Slots_ChkErrDataReceived(const QString mid, QJsonDocument document);
+    void Slots_PositionReceived(const QString mid, uint, int mcc, int mnc, uint lac, uint ci);
 
 private:
     static ServicesInstance *_instance;
@@ -35,6 +37,7 @@ private:
     MysqlInterfaceInstance *mysqlinstance ;
     MailSmtpInstance *mailsmtpinstance;
     TencentsmsInstance *smsinstance;
+    Celllocationinstance* celllocationinstance;
     Panelinfo m_panelinfo;
 
 
