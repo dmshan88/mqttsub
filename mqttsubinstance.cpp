@@ -34,12 +34,23 @@ MqttSubInstance::MqttSubInstance() :
     m_client->setPassword(MYMQTT_PASSWORD);
 //    m_client->setCleansess(true);
     m_client->setKeepAlive(120);
-    m_client->Connect();
+
 }
 
 MqttSubInstance::~MqttSubInstance()
 {
 
+}
+
+QString MqttSubInstance::getStatus()
+{
+    return (m_client->isConnected()) ? "server is connect" :"server is disconnect";
+
+}
+
+void MqttSubInstance::startServer()
+{
+    m_client->Connect();
 }
 
 void MqttSubInstance::Slots_MQTT_Connected()

@@ -1,6 +1,5 @@
 #include "services.h"
 #include "include.h"
-
 #include <QJsonObject>
 
 ServicesInstance*  ServicesInstance::_instance = 0;
@@ -18,7 +17,8 @@ ServicesInstance::ServicesInstance() :
     mysqlinstance(MysqlInterfaceInstance::Instance()),
     mailsmtpinstance(MailSmtpInstance::Instance()),
     smsinstance(TencentsmsInstance::Instance()),
-    celllocationinstance(Celllocationinstance::Instance())
+    celllocationinstance(Celllocationinstance::Instance()),
+    m_timer(new QTimer(this))
 {
 
     QObject::connect(mqttinstance, SIGNAL(Signals_Server_Init()), mysqlinstance, SLOT(Slots_Server_Init()));
@@ -26,6 +26,10 @@ ServicesInstance::ServicesInstance() :
     QObject::connect(mqttinstance, SIGNAL(Signals_Machine_Disconnected(QString)), mysqlinstance, SLOT(Slots_Machine_Disconnected(QString)));
     QObject::connect(mqttinstance, SIGNAL(Signals_ChkErrDataReceived(QString, QJsonDocument)), this, SLOT(Slots_ChkErrDataReceived(const QString, QJsonDocument)));
     QObject::connect(mqttinstance, SIGNAL(Signals_PositionReceived(QString, uint, int, int, uint, uint)), this, SLOT(Slots_PositionReceived(const QString, uint, int, int, uint, uint)));
+//    QTimer *testTimer = new QTimer();
+    QObject::connect(m_timer, SIGNAL(timeout()), this, SLOT(recordstat()));
+    m_timer->start(30000);
+    mqttinstance->startServer();
 }
 
 ServicesInstance::~ServicesInstance()
@@ -87,7 +91,16 @@ void ServicesInstance::Slots_PositionReceived(const QString mid, uint, int mcc, 
             return;
         }
     }
-    celllocationinstance->getlocation(mcc, mnc, lac, ci);
+    ;
+    if (!celllocationinstance->getlocation(mcc, mnc, lac, ci)) {
+        qDebug() << "not get location";
+    }
     mysqlinstance->setNewpos(machineid, mcc, mnc, lac, ci, celllocationinstance->getLat(), celllocationinstance->getLon() ,celllocationinstance->getAddress());
 
+}
+
+void ServicesInstance::recordstat()
+{
+
+    qDebug() << mqttinstance->getStatus();
 }

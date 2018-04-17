@@ -2,6 +2,7 @@
 #define SERVICES_H
 
 #include <QObject>
+#include <QTimer>
 
 #include "mqttsubinstance.h"
 #include "mysqlinterface.h"
@@ -30,6 +31,7 @@ public slots:
 private slots:
     void Slots_ChkErrDataReceived(const QString mid, QJsonDocument document);
     void Slots_PositionReceived(const QString mid, uint, int mcc, int mnc, uint lac, uint ci);
+    void recordstat();
 
 private:
     static ServicesInstance *_instance;
@@ -39,6 +41,7 @@ private:
     TencentsmsInstance *smsinstance;
     Celllocationinstance* celllocationinstance;
     Panelinfo m_panelinfo;
+    QTimer* m_timer;
 
 
 };

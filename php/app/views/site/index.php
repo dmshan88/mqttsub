@@ -4,59 +4,35 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\NewstatSearch */
+/* @var $searchModel app\models\MachineSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Newstats';
+$this->title = 'Machines';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="newstat-index">
+<div class="machine-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'activetime',
+            // ['class' => 'yii\grid\SerialColumn'],
+            'newstat.activetime',
+            'mtype',
+            'id',
+            // 'newstat.online',
             [
-                'attribute' => 'type',
-                'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
-                'content' => function ($model,$key, $index, $column) {
-                    return $model->machine->mtype;
-                
-                },
-            ],
-            'machine_id',
-            [
-                'attribute' => 'address',
+                'attribute' => 'newstat.online',
                 'format' => 'html',
                 'content' => function ($model,$key, $index, $column) {
-                    $newpos = $model->machine->newpos;
-                    if (empty($newpos)) {
-                        return "";
-                    } else {
-                        // return $newpos->address;
-
-                        $url = sprintf("https://ditu.amap.com/regeo?lng=%s&lat=%s&src=uriapi", $newpos->lon, $newpos->lat);
-                        return Html::a($newpos->address, $url, ["target" => "_blank"]);
-                    }
-                    // var_dump($model->machine->newpos);
-                    // return $model->machine->newpos->tableName();
-                
-                },
-            ],
-            [                                                  // the owner name of the model
-                'attribute' => 'online',
-                'format' => 'html',
-                'content' => function ($model,$key, $index, $column) {
-                    return $model->online;
+                    return $model['newstat']['online'];
                 
                 },
                 'contentOptions' => function ($model,$key, $index, $column) {
-                    if ($model->online == 'N') {
+                    if ($model['newstat']['online'] == 'N') {
                         return ['style'=>"color:red"];
                     } else {
                         return ['style'=>"color:green"];
@@ -64,8 +40,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 }
             ],
+            // 'newpos.address',
+            [
+                'attribute' => 'address',
+                'content' => function ($model,$key, $index, $column) {
+                    $newpos = $model->newpos;
+                    if (empty($newpos)) 
+                        return "";
+                    $url = sprintf("https://ditu.amap.com/regeo?lng=%s&lat=%s&src=uriapi", $newpos['lon'], $newpos['lat']);
+                    return Html::a($newpos['address'], $url, ["target" => "_blank"]);
+                
+                }
+            ],
 
-            // ['class' => 'yii\grid\ActionColumn'],
+
         ],
     ]); ?>
 </div>

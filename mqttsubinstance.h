@@ -40,6 +40,9 @@ public:
     static MqttSubInstance *Instance();
     ~MqttSubInstance();
 
+    QString getStatus();
+    void startServer();
+
 protected:
     MqttSubInstance();
 
