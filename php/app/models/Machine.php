@@ -11,7 +11,9 @@ use Yii;
  * @property string $clientid
  * @property string $mtype
  *
+ * @property Historypos[] $historypos
  * @property Historystat[] $historystats
+ * @property Newpos $newpos
  * @property Newstat $newstat
  */
 class Machine extends \yii\db\ActiveRecord
@@ -53,9 +55,25 @@ class Machine extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getHistorypos()
+    {
+        return $this->hasMany(Historypos::className(), ['machine_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getHistorystats()
     {
         return $this->hasMany(Historystat::className(), ['machine_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewpos()
+    {
+        return $this->hasOne(Newpos::className(), ['machine_id' => 'id']);
     }
 
     /**

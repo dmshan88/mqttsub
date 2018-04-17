@@ -3,7 +3,7 @@
 
 #include "services.h"
 #include "functions.h"
-#include "panelinfo.h"
+
 int main(int argc, char ** argv)
 {
     qInstallMessageHandler(myMessageOutput);

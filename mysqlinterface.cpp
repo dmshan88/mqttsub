@@ -3,6 +3,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QDateTime>
+#include <QDate>
 #include <QSqlError>
 
 #include "mysqlinterface.h"
@@ -143,3 +144,100 @@ bool MysqlInterfaceInstance::addNewstat(QString mid, bool online)
     }
 
 }
+
+bool MysqlInterfaceInstance::getMachine(QString mid, QString &mtype)
+{
+    QSqlQuery q;
+    q.prepare("SELECT * FROM machine WHERE id = :id");
+    q.bindValue(":id", mid);
+    q.exec();
+    switch (q.size()) {
+    case 0 :
+//        qDebug() << "0";
+        return false;
+        break;
+    case 1 :
+        q.next();
+        mtype = q.value("mtype").toString();
+        return true;
+        break;
+    default:
+        qDebug() << "multi record";
+        return false;
+    }
+}
+
+bool MysqlInterfaceInstance::getNewpos(QString mid, uint &lac, uint& ci)
+{
+    qDebug() << "getNewpos" << mid << lac << ci;
+    QSqlQuery q;
+    q.prepare("SELECT * FROM newpos WHERE machine_id = :id");
+    q.bindValue(":id", mid);
+    q.exec();
+    switch (q.size()) {
+    case 0 :
+        qDebug() << "0";
+        return false;
+        break;
+    case 1 :
+        qDebug() << "1";
+        q.next();
+        lac = q.value("lac").toInt();
+        ci = q.value("ci").toInt();
+        return true;
+        break;
+    default:
+        qDebug() << "multi record";
+        return false;
+    }
+}
+
+bool MysqlInterfaceInstance::setNewpos(const QString mid, int mcc, int mnc, uint lac, uint ci, double lat, double lon, QString address)
+{
+    QSqlQuery q;
+    uint oldlac, oldci;
+    QString errormsg;
+    m_db.transaction();
+    try {
+        if (!getNewpos(mid, oldlac, oldci)) {
+            q.prepare("INSERT INTO newpos (machine_id, lastpostdate, mcc, mnc, lac, ci, lat, lon, address) VALUES (:machine_id, :lastpostdate, :mcc, :mnc, :lac, :ci, :lat, :lon, :address)");
+            qDebug() << "insert newpos" << lac << ci;
+        } else {
+            q.prepare("UPDATE newpos SET lastpostdate = :lastpostdate , lac = :lac , ci = :ci , lat = :lat , lon = :lon , address = :address WHERE machine_id = :machine_id");
+            qDebug() << "update newpos" << lac << ci;
+        }
+
+        q.bindValue(":machine_id", mid);
+        q.bindValue(":lastpostdate", QDate::currentDate().toString("yyyy-MM-dd"));
+        q.bindValue(":mcc", mcc);
+        q.bindValue(":mnc", mnc);
+        q.bindValue(":lac", lac);
+        q.bindValue(":ci", ci);
+        q.bindValue(":lat", lat);
+        q.bindValue(":lon", lon);
+        q.bindValue(":address", address);
+        if(!q.exec()){
+           errormsg = "setnewpos error";
+            throw errormsg;
+        }
+        q.clear();
+        q.prepare("INSERT INTO historypos (machine_id, activetime, lat, lon, address) VALUES (:machine_id, :activetime, :lat, :lon, :address)");
+        q.bindValue(":machine_id", mid);
+        q.bindValue(":activetime",  QDateTime::currentDateTime().toString("yy-MM-dd HH:mm:ss"));
+        q.bindValue(":lat", lat);
+        q.bindValue(":lon", lon);
+        q.bindValue(":address", address);
+        if (!q.exec()) {
+            errormsg = "insert history newpos error";
+            throw errormsg;
+        }
+
+        m_db.commit();
+        return true;
+    } catch (QString exception){
+        m_db.rollback();
+        qDebug() << exception;
+        return false;
+    }
+}
+
