@@ -39,7 +39,9 @@ QByteArray HttpPostInstance::post(QByteArray data)
 
     QNetworkReply* reply = nam->post(*request, data);
     connect(reply, SIGNAL(finished()), &temp_loop, SLOT(quit()));
+    qDebug() << "begin post";
     temp_loop.exec();
+    qDebug() << "end post";
     if (reply->error() == QNetworkReply::NoError)
     {
          bytes = reply->readAll();
@@ -56,7 +58,9 @@ QByteArray HttpPostInstance::get()
 
     QNetworkReply* reply = nam->get(*request);
     connect(reply, SIGNAL(finished()), &temp_loop, SLOT(quit()));
+    qDebug() << "begin get";
     temp_loop.exec();
+    qDebug() << "end get";
     if (reply->error() == QNetworkReply::NoError)
     {
          bytes = reply->readAll();

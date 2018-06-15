@@ -1,11 +1,11 @@
 #ifndef CELLLOCATIONINSTANCE_H
 #define CELLLOCATIONINSTANCE_H
-
+#include "include.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QUrl>
-static const QString CELLLOCATION_URL = "http://api.cellocation.com:81/cell/";
+static const QString CELLLOCATION_URL = MY_CELLOCATION_ADDRESS;//http://api.cellocation.com:81/cell/
 
 class Celllocationinstance : public QObject
 {
